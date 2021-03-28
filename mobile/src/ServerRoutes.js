@@ -1,5 +1,5 @@
 import { getToken } from "./UserStorage"
 
-export default routes = {
+export default server_routes = {
     api: "/api"
 };

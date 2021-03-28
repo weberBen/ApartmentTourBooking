@@ -128,7 +128,7 @@ function App({ }) {
                         const data = response.data;
                         
                         const msg = data.data;
-                        const registration_model = msg.registration;
+                        const registration_model = msg.registration + msg.appendix_msg;
 
                         setModelSmsMsg(registration_model);
 

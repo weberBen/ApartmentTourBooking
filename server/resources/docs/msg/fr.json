@@ -1,14 +1,14 @@
 {
     "action": {
         "book": {
-            "validate": "Bonjour,\nConfirmation de visite (référence : {{event.reference}}) : rendez-vous le {{event.date}} de {{event.start_time}} à {{event.end_time}} (fuseau horaire {{timezone}}) au {{localization.address}} - {{localization.city_name}} ({{localization.city_code}}.\nUne fois devant la porte merci d'appeler.\n\nEn cas d'erreur de saisie ou de retard merci de m'en informer.\n\nLa visiste débute à l'heure de début du créneau et il ne sera pas possible d'empiéter sur les visites suivantes.\nEn cas de retards ne permettant plus de pourquivre la visite, cette dernière sera annulée.\n",
+            "validate": "Bonjour,\nConfirmation de visite (référence : {{event.reference}}) : rendez-vous le {{event.date}} de {{event.start_time}} à {{event.end_time}} (fuseau horaire {{timezone}}) au {{localization.address}} ({{localization.info}}) - {{localization.city_name}} {{localization.city_code}}.\nUne fois devant la porte merci d'appeler.\n\nEn cas d'erreur de saisie ou de retard merci de m'en informer.\n\nLa visiste débute à l'heure de début du créneau et il ne sera pas possible d'empiéter sur les visites suivantes.\nEn cas de retards ne permettant plus de poursuivre la visite, cette dernière sera annulée.",
             "cancel": "Bonjour,\nVotre réservation de visite référence {{event.reference}} du créneau {{event.start_date}} - {{event.end_date}} n'a pas pu être validé pour le motif suivant : <<{{action.reason}}>>.\nMerci de choisir un autre créneau si possible.\n"
         },
         "unbook": {
-            "validate": "Bonjour,\nSuite à votre demande la visite {{event.reference}} du créneau {{event.start_date}} - {{event.end_date}} a bien été annulé.\n"
+            "validate": "Bonjour,\nSuite à votre demande la visite {{event.reference}} du créneau {{event.start_date}} - {{event.end_date}} a bien été annulé."
         },
-        "default": "Bonjour,\nDes données vous concernant pour la visite de l'appartement ont été mise à jour. Pour les consulter rendez-vous sur votre espace dédié.\n"
+        "default": "Bonjour,\nDes données vous concernant pour la visite de l'appartement ont été mises à jour. Pour les consulter rendez-vous sur votre espace dédié."
     },
-    "registration": "Bonjour,\nAfin de faciliter la gestion et la prise des visites, j'ai développé une interface que je mets à votre disposition à l'url : {{user.login_url}} .",
-    "appendix_msg": "\n[Ceci est un message automatique, merci de n'y répondre qu'en cas de nécessité absolue]"
+    "registration": "Bonjour,\nAfin de faciliter la gestion et la prise des visites pour l'appartement, je mets à votre disposition une plateforme, permettant le traitement en ligne de vos demandes, à l'URL suivant : {{user.login_url}} ",
+    "appendix_msg": "\n\n[Ceci est un message automatique, merci de n'y répondre qu'en cas de nécessité absolue]"
 }

@@ -101,6 +101,27 @@ function ArgumentsToArray(args) {
 
 export default {
     get: async function () {
+
+        /*let url = arguments[0];
+        if(url)
+        {
+            const parm = "random_cache_key=" + (new Date()).getTime();
+            if(url.split('?').length>1)
+            {
+                url += "&";
+            }else
+            {
+                if(url[url.length-1]!='/')
+                {
+                    url += "/";
+                }   
+
+                url += "?";
+            }
+            url += parm;
+        }
+        arguments[0] = url;
+        */
         return (await (new Promise((resolve, reject)=> executeAxiosCmd(resolve, reject)))).get.apply(this, arguments);
     },
     post: async function () {

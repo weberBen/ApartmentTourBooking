@@ -17,8 +17,6 @@ class LanguageController extends Controller
     public function getMsg(Request $request)
     {
         $language = $request->language;
-        error_log("\n\n-----------------------------");
-        error_log($language);
         
         $data = Tools::getMsgModels($language);
 
