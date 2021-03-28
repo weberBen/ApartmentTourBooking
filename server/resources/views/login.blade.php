@@ -382,13 +382,26 @@ input[type=tel]:placeholder {
     {
         const user = JSON.parse($.cookie('user'));
         const token = user.token;
-        if(token!=null)
-        {
+
+        $.ajax
+        ({
+          type: "GET",
+          url: "/api/profile",
+          dataType: 'json',
+          headers: {
+            "Authorization": "Bearer " + token
+          },
+          success: function (){
             document.location.href = "{{ URL::route('home') }}"
-        }
+          },
+          error: function() {
+            $.removeCookie('user', { path: '/' });
+          },
+        });
+        
     }catch(err)
     {
-
+      $.removeCookie('user', { path: '/' });
     }
 
     $(document).ready(function() {

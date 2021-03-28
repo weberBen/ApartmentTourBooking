@@ -20,6 +20,7 @@ class UserLoginUrlsTableSeeder extends Seeder
         {
             UserLoginUrl::create([
                 'id_user' => $user->id,
+                'active'  => false,
             ]);
         }
     }

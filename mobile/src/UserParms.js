@@ -1,11 +1,12 @@
 import React, { useEffect, useState }  from 'react';
-import { Text, TextInput, View, Picker, TouchableHighlight, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Button, Alert, CheckBox, Modal } from 'react-native';
+import { Text, TextInput, View, Picker, TouchableHighlight, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Button, Alert, CheckBox, Modal, ActivityIndicator } from 'react-native';
 import * as Calendar from 'expo-calendar';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as UserStorage from '../src/UserStorage';
 import _axios from 'axios';
 import ServerRoutes from '../src/ServerRoutes';
+import * as Updates from 'expo-updates';
 
 /*
     data: list of oject
@@ -163,6 +164,7 @@ const App = ({navigation}) => {
     const [before_event_name, setBeforeEventName] = useState("V");
     const [language, setLanguage] = useState(null);
     const [server_connexion, setServerConnexion] = useState(null);
+    const [processing, setProcessing] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -360,9 +362,17 @@ const App = ({navigation}) => {
 
             <View style={{paddingTop:10}}/>
 
+            {processing && <ActivityIndicator size="large" color='red' /> }
+
             <Button
             title="Save"
             onPress={({status, error}) => {
+
+                if(processing)
+                    return ;
+                
+                setProcessing(true);
+
                 const data = {
                     server : {
                         url:server_url,
@@ -381,19 +391,41 @@ const App = ({navigation}) => {
                 };
 
                 UserStorage.save(data).then((response)=> {
-                    var content = "";
+                    let content = "";
 
                     if(response.status)
-                        content = "Data has been saved successfully";
-                    else
-                        content = "An error occurs while trying to save data : " + JSON.stringify(response.error);;
-                     
-                    Alert.alert(
-                    "Saving status",
-                    content,
-                    [
-                        { text: "OK" }
-                    ]);
+                    {
+                        content = "Data has been saved successfully.\nThe app is going to restart";
+                        Alert.alert(
+                            "Saving status",
+                            content,
+                            [
+                              {
+                                text: 'ok',
+                                onPress: () => {
+                                    setProcessing(false);
+
+                                    Updates.reloadAsync().then((data) => {//because problems with data updating
+                                            
+                                    });
+                                },
+                              },
+                            ],
+                            { cancelable: false },
+                        );
+                        
+                    }else
+                    {   
+                        setProcessing(false);
+                        content = "An error occurs while trying to save data : " + JSON.stringify(response.error);
+
+                        Alert.alert(
+                            "Saving status",
+                            content,
+                            [
+                                { text: "OK" }
+                        ]);
+                    }
                 });
             }}
         />

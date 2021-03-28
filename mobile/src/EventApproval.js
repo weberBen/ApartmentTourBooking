@@ -20,11 +20,26 @@ function Card({ data, actionParms}) {
 
   const type_name = actionParms.reverse_types[data.type];
   const public_data = JSON.parse(data.public_data);
+  const history = public_data.history;
   const event = public_data.calendar_event;
+
+  console.log("public data=");
+  console.log(public_data);
+
+  let reason_state = "";
+  if(history && history.length>0)
+  {
+    const item = history[history.length-1];
+    reason_state = item.reason_state;
+  }
 
   return (
     <View style={{}}>
       <Text style={{backgroundColor:ACTION_TYPE_COLORS[type_name], textAlign: 'center', fontSize:30, padding:5, marginBottom:10}}>{type_name.toUpperCase()}</Text>
+      <Text> 
+        <Text style={{fontWeight:"bold"}}> User phone : </Text> 
+        <Text style={{}}>{data.user.phone}</Text>
+      </Text>
       <Text> 
         <Text style={{fontWeight:"bold"}}> Time zone : </Text> 
         <Text style={{}}>{event.timezone}</Text>
@@ -39,7 +54,7 @@ function Card({ data, actionParms}) {
       </Text>
       <Text> 
         <Text style={{fontWeight:"bold"}}> Raison : </Text> 
-        <Text style={{marginRight:"auto"}}>{data.reason_state}</Text>
+        <Text style={{marginRight:"auto"}}>{reason_state}</Text>
       </Text>
       <Text> 
         <Text style={{fontWeight:"bold"}}> Date de récéption : </Text> 

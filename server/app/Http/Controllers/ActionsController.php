@@ -245,7 +245,7 @@ class ActionsController extends Controller
                     $now = Carbon::now();
                     $tmp_public_data = json_decode(json_encode($public_data), true);
                     $tmp_public_data["history"] = [];
-                    $public_data = self::addHistoryEntry($public_data, $row->id_user, Action::$STATES["waiting_validation"], $reason_state, $timezone);
+                    $tmp_public_data = self::addHistoryEntry($tmp_public_data, $row->id_user, Action::$STATES["waiting_validation"], $reason_state, $timezone);
 
                     $action = Action::create([
                         "id_user" => $row->id_user,
@@ -550,7 +550,7 @@ class ActionsController extends Controller
         }
 
 
-        $res = Action::with(['user'])->whereIn('state', [Action::$STATES["waiting_validation"]])->get();
+        $res = Action::with(['user'])->whereIn('state', [Action::$STATES["waiting_validation"]])->orderByRaw('DATE(updated_at) ASC')->get();
 
         return response()->json(["data" => [
             "values" => $res,

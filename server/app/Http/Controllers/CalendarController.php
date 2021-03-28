@@ -242,7 +242,7 @@ class CalendarController extends Controller
             $query = $query->where('id_user', $id_user);
         else if(is_array($id_user))
             $query = $query->whereIn('id_user', $id_user);
-        $query = $query->whereNotIn('state', [Planning::$STATES["not_allocated"]])->orderBy('start_timestamp', 'DESC')->orderBy('updated_at', 'DESC');
+        $query = $query->whereNotIn('state', [Planning::$STATES["not_allocated"]])->orderBy('start_timestamp', 'DESC')->orderByRaw('DATE(updated_at) DESC');
         if(isset($start_date))
         {
             $query = $query->where('created_at', '>=', $start_date);

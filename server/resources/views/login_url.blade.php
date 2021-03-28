@@ -1,5 +1,3 @@
-
-
 <html>
 <head>
   <title>Visite</title>
@@ -26,12 +24,22 @@
         })
         .done(function(data) {
 
+          if(!("error" in data))
+          {
             setUserCookie(data);
 
             document.location.href = "{{ URL::route('home') }}"
+          }else
+          {
+            $.removeCookie('user', { path: '/' });
+            document.location.href = "{{ URL::route('login') }}"
+          }
+
         })
         .fail(function(err) {
             console.error(err);
+
+            $.removeCookie('user', { path: '/' });
 
             document.location.href = "{{ URL::route('login') }}"
         });

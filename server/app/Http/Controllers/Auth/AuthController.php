@@ -80,6 +80,9 @@ class AuthController extends Controller
         if(!isset($user_url))
         {
             return response()->json([], 401);
+        }else if(!$user_url->active)
+        {
+            return response()->json([], 401);
         }
 
         $user = User::find($user_url->id_user);
