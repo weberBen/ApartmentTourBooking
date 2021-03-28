@@ -1,0 +1,78 @@
+{
+    "fr": { 
+        "calendar": {
+            "states": {
+                "values": {
+                    "abscence": {
+                        "title": "Absence personnes",
+                        "color": "#f97356"
+                    },
+                    "cancelled": {
+                        "title": "Annulation",
+                        "color": "#bdb4b1"
+                    },
+                    "not_allocated": {
+                        "title":  "Libre",
+                        "color": ""
+                    },
+                    "waiting_validation": {
+                        "title": "Attente validation",
+                        "color":  "#cb9eef"
+                    },
+                    "validated": {
+                        "title": "À venir",
+                        "color": "#f5cb71"
+                    },
+                    "done": {
+                        "title": "Fait",
+                        "color": "#a3f188"
+                    },
+                    "waiting_cancellation": {
+                        "title": "Attente d'annulation",
+                        "color":  "#6f89e5"
+                    }
+                },
+                "default": {
+                    "title": "",
+                    "color": ""
+                }
+            }
+        },
+
+        "actions": {
+            "states" : {
+                "values": {
+                    "cancelled": {
+                        "title": "Annulation",
+                        "color": "#f97356"
+                    },
+                    "waiting_validation": {
+                        "title": "Attente validation",
+                        "color": "#f5cb71"
+                    },
+                    "validated": {
+                        "title": "Validé",
+                        "color": "#a3f188"
+                    }
+                },
+                "default": {
+                    "title":  "",
+                    "color": ""
+                }
+            },
+            "types": {
+                "values": {
+                    "book": {
+                        "title": "Réservation"
+                    },
+                    "unbook": {
+                        "title": "Annulation"
+                    },
+                    "state_update": {
+                        "title": "Changement statut"
+                    }
+                }
+            }
+        }
+    }
+}

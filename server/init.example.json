@@ -1,0 +1,21 @@
+{
+    "lodger": {
+        "name": "Loadger",
+        "phone": "+33600000000",
+        "pwd": "admin"
+    },
+    "owner": {
+        "name": "Owner",
+        "phone": "+33600000001",
+        "pwd": "manager"
+    },
+
+    "timezone": "America/New_York",
+
+    "apartment_localization" : {
+        "address" : "754 main stree park",
+        "city_code": "11201",
+        "city_name": "New York",
+        "info": "first floor"
+    }
+}
