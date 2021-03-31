@@ -4,3 +4,5 @@ Allow people to book a visit to your apartment (because you leave it) without ha
 /etc/apache2/apache2.conf
 <Directory /var/www/>
 AllowOverride None -> AllowOverride All
+
+![Alt Text](https://github.com/weberBen/ApartmentTourBooking/assets/giphy.gif)
