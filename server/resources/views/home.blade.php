@@ -386,7 +386,9 @@
             }else if(data.error_type=="already_allocated")
             {
               modal.find(".modal-alert-msg").html("Il semblerait que le créneau ait été réservé par une autre personne pendant votre choix.<br/>Veuillez rafraîchir la page et recommencer");
-
+            }else if(data.error_type=="already_spent_datetime")
+            {
+              modal.find(".modal-alert-msg").html("Vous ne pouvez réserver un créneau débutant avant la date et l'heure actuelle");
             }
           }else
           {

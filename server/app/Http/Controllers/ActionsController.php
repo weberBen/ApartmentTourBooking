@@ -69,6 +69,7 @@ class ActionsController extends Controller
     {
         $id_event = $request->id_calendar_event;
         $id_user = \Auth::user()->id;
+        $event_now = Carbon::now();
 
         $timezone = Info::find('timezone')->value;
 
@@ -82,7 +83,7 @@ class ActionsController extends Controller
             $pdo = \DB::connection()->getPdo();
             $pdo->exec('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE');
             
-            $res = \DB::transaction(function() use($id_event, $id_user, $timezone) {
+            $res = \DB::transaction(function() use($id_event, $id_user, $timezone, $event_now) {
 
                 $row = Planning::lockForUpdate()->find($id_event);
                 if(!isset($row))
@@ -90,6 +91,9 @@ class ActionsController extends Controller
                  
                 if($row->state!=Planning::$STATES["not_allocated"])
                     return ["error"=>"cannot book an allocated event", "error_type" => "already_allocated"];
+                
+                if(Carbon::parse($row->start_date)<$event_now)
+                    return ["error"=>"cannot book a previous event in time", "error_type" => "already_spent_datetime"];
 
                 $res = self::buildEventData($row, $timezone);
                 $data =$res["data"];

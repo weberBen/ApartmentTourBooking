@@ -125,7 +125,7 @@ class CalendarController extends Controller
         $end_date = Carbon::parse($end);
 
         $array_calendar = [];
-        $query = \DB::table("planning")->where('start_date', '>=', $start_date)->where('end_date', '<=', $end_date);
+        $query = \DB::table("planning");
 
         $can_add_events = true;
 
@@ -156,7 +156,7 @@ class CalendarController extends Controller
         $calendar_language = Tools::getTraductions($language)["calendar"];
         $timezone = Info::find('timezone')->value;
 
-        $res = $query->get();
+        $res = $query->where('start_date', '>=', $start_date)->where('end_date', '<=', $end_date)->get();
         foreach($res as $item)
         {
             $event = array(
