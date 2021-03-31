@@ -75,7 +75,7 @@ function StatusCard({ text }) {
 const NOTE_LINES = [
   { 
     name: "warning",
-    value: "DO NOT BEGINNING THE BEGINING OF THAT NOTE]",
+    value: "DO NOT EDIT THE BEGINING OF THAT NOTE]",
   },
   {
     name: "event_ref",
@@ -90,12 +90,16 @@ const NOTE_LINES = [
     value: "Phone :",
   },
   {
+    name: "user_id",
+    value: "USER id :",
+  },
+  {
     name: "end_warning",
     value: "[END DO NOT EDIT]"
   }
 ];
 
-function buildCalendarNote(event_ref, event_id, phone)
+function buildCalendarNote(event_ref, event_id, user_id, phone)
 {
   var output = "";
   for(var i in NOTE_LINES)
@@ -114,6 +118,11 @@ function buildCalendarNote(event_ref, event_id, phone)
       case "event_id":
       {
         output += event_id;
+      }
+      break;
+      case "user_id":
+      {
+        output += user_id;
       }
       break;
       case "phone":
@@ -255,7 +264,7 @@ export default function App() {
                       startDate: start_date,
                       endDate: end_date,
                       allDay: false,
-                      notes: buildCalendarNote(event.reference, event.id, action.user.phone),
+                      notes: buildCalendarNote(event.reference, event.id, action.user.id, action.user.phone),
                     };
                     
                     

@@ -289,7 +289,7 @@ input[type=tel]:placeholder {
     <!-- Login Form -->
     <form id="login_form">
       <input type="tel" id="user_id" class="fadeIn" placeholder="Téléphone" data-index="1" autofocus>
-      <input type="password" id="user_password" class="fadeIn" placeholder="Mot de passe" data-index="2">
+      <input type="password" id="user_password" class="fadeIn" placeholder="Mot de passe" data-index="2" autocorrect="off" autocapitalize="none" autocomplete="off">
       <input type="button" class="fadeIn fourth submit" value="Se connecter" data-index="3">
     </form>
 
@@ -302,13 +302,14 @@ input[type=tel]:placeholder {
 </div>
 </body>
 
-<script src="{{ asset('assets/global/js/jquery.min.js') }}"></script>
-<script src="{{ asset('assets/global/js/jquery.cookie.js') }}"></script>
-<script src="{{ asset('assets/global/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('assets/global/vendor/intlTelInput/js/intlTelInput.min.js') }}"></script> 
-<script src="{{ asset('assets/global/vendor/intlTelInput/js/intlTelInput-jquery.min.js') }}"></script> 
+<script type="text/javascript" src="{{ asset('assets/global/js/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/global/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/global/vendor/intlTelInput/js/intlTelInput.min.js') }}"></script> 
+<script type="text/javascript" src="{{ asset('assets/global/vendor/intlTelInput/js/intlTelInput-jquery.min.js') }}"></script> 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/store.js/2.0.0/store.everything.min.js"></script>
 
 <script>
+
 
     var input = document.querySelector("#user_id");
     const iti_tel = window.intlTelInput(input, {
@@ -320,12 +321,12 @@ input[type=tel]:placeholder {
         
     });
     
-    function setUserCookie(data)
+    function removeUserData()
     {
-      const expiration_time_min = 14400;
-
-      var expDate = new Date();
-      $.cookie('user', JSON.stringify(data), { expires: expDate.setTime(expDate.getTime() + (expiration_time_min * 60 * 1000)), path: '/' });
+      if(typeof store !== 'undefined')
+      {
+        store.remove('user');
+      }
     }
 
     function login()
@@ -338,12 +339,22 @@ input[type=tel]:placeholder {
             password: password,
         })
         .done(function(data) {
-            setUserCookie(data);
 
-            document.location.href = "{{ URL::route('home') }}"
+            let url = "{{ URL::route('home') }}";
+            if(typeof store == 'undefined')
+            {
+              url += "?" + "access_token=" + data.token;
+            }else
+            {
+              store.set('user', data);
+            }
+            
+          document.location.href = url;
         })
         .fail(function(err) {
             console.error(err);
+
+            removeUserData();
 
             res = err.responseJSON;
             if("error" in res)
@@ -380,7 +391,9 @@ input[type=tel]:placeholder {
 
     try
     {
-        const user = JSON.parse($.cookie('user'));
+      if(typeof store !== 'undefined')
+      {
+        const user = store.get('user');
         const token = user.token;
 
         $.ajax
@@ -392,16 +405,17 @@ input[type=tel]:placeholder {
             "Authorization": "Bearer " + token
           },
           success: function (){
-            document.location.href = "{{ URL::route('home') }}"
+            document.location.href = "{{ URL::route('home') }}";
           },
-          error: function() {
-            $.removeCookie('user', { path: '/' });
+          error: function(err) {
+            removeUserData();
           },
         });
+      }
         
     }catch(err)
     {
-      $.removeCookie('user', { path: '/' });
+      removeUserData();
     }
 
     $(document).ready(function() {

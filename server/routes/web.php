@@ -11,12 +11,14 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::get('/home', function () {
-    return view('home');
+Route::get('/', function (Illuminate\Http\Request $request) {
+    $access_token = $request->access_token;
+
+    return view('home',  compact('access_token'));
 })->name('home');
 
 Route::get('/login-url/{uuid}', function (Illuminate\Http\Request $request) {

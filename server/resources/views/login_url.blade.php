@@ -8,16 +8,16 @@
 </body>
 
 <script src="{{ asset('assets/global/js/jquery.min.js') }}"></script>
-<script src="{{ asset('assets/global/js/jquery.cookie.js') }}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/store.js/2.0.0/store.everything.min.js"></script> 
 
 <script>
 
-    function setUserCookie(data)
+    function removeUserData()
     {
-      const expiration_time_min = 14400;
-
-      var expDate = new Date();
-      $.cookie('user', JSON.stringify(data), { expires: expDate.setTime(expDate.getTime() + (expiration_time_min * 60 * 1000)), path: '/' });
+      if(typeof store !== 'undefined')
+      {
+        store.remove('user');
+      }
     }
 
     $.post("/api/auth/login-url/{{$uuid}}", {
@@ -26,12 +26,20 @@
 
           if(!("error" in data))
           {
-            setUserCookie(data);
+              let url = "{{ URL::route('home') }}";
 
-            document.location.href = "{{ URL::route('home') }}"
+              if(typeof store == 'undefined')
+              {
+                url += "?" + "access_token=" + data.token;
+              }else
+              {
+                store.set('user', data);
+              }
+
+            document.location.href = url;
           }else
           {
-            $.removeCookie('user', { path: '/' });
+            removeUserData();
             document.location.href = "{{ URL::route('login') }}"
           }
 
@@ -39,7 +47,7 @@
         .fail(function(err) {
             console.error(err);
 
-            $.removeCookie('user', { path: '/' });
+            removeUserData();
 
             document.location.href = "{{ URL::route('login') }}"
         });

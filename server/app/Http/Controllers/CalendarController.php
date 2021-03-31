@@ -121,8 +121,8 @@ class CalendarController extends Controller
         $start = $request->start;
         $end = $request->end;
 
-        $start_date = Carbon::parse($start)->setTimezone('UTC');
-        $end_date = Carbon::parse($end)->setTimezone('UTC');
+        $start_date = Carbon::parse($start);
+        $end_date = Carbon::parse($end);
 
         $array_calendar = [];
         $query = \DB::table("planning")->where('start_date', '>=', $start_date)->where('end_date', '<=', $end_date);
@@ -140,7 +140,7 @@ class CalendarController extends Controller
             $query = $query->whereNotIn('state', [Planning::$STATES["not_allocated"], Planning::$STATES["waiting_validation"]]);
         }else
         {
-            $start_date = Carbon::now()->setTimezone('UTC');
+            $start_date = Carbon::now();
             
             $can_add_events = Tools::canUserAddCalendarEvent($user->id);
             $query = $query->whereIn('state', [Planning::$STATES["not_allocated"]]);
@@ -245,11 +245,11 @@ class CalendarController extends Controller
         $query = $query->whereNotIn('state', [Planning::$STATES["not_allocated"]])->orderBy('start_timestamp', 'DESC')->orderByRaw('DATE(updated_at) DESC');
         if(isset($start_date))
         {
-            $query = $query->where('created_at', '>=', $start_date);
+            $query = $query->where('start_timestamp', '>=', $start_date->timestamp);
         }
         if(isset($end_date))
         {
-            $query = $query->where('created_at', '<=', $end_date);
+            $query = $query->where('end_timestamp', '<=', $end_date->timestamp);
         }
         $events = $query->get($planning_columns);
 

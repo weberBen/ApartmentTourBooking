@@ -28,7 +28,7 @@ class ProfileController extends Controller
         // transform user data
         $data = new UserResource($user);
 
-        return response()->json(compact('data'), 498);
+        return response()->json(compact('data'));
 
     }
 

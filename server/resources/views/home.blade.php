@@ -293,7 +293,6 @@
 
 <!-- Vendor JS Files -->
 <script src="{{ asset('assets/global/js/jquery.min.js') }}"></script>
-<script src="{{ asset('assets/global/js/jquery.cookie.js') }}"></script>
 <script src="{{ asset('assets/global/vendor/aos/aos.js') }}"></script>
 <script src="{{ asset('assets/global/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('assets/global/vendor/glightbox/js/glightbox.min.js') }}"></script>
@@ -317,18 +316,29 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.print.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n/fr.min.js"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/store.js/2.0.0/store.everything.min.js"></script> 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script>
+
+    function removeUserData()
+    {
+      if(typeof store !== 'undefined')
+      {
+        store.remove('user');
+      }
+    }
 
   function goToPage(page_name)
   {
     if(page_name=="login")
     {
-      $.removeCookie('user');
+      removeUserData();
       document.location.href = "{{ URL::route('login') }}";
     }
   }
+
+
 
   const RANK_COLORS = ["#f54545", "#f54545", "#f54545", "#e9ead4", "#8df545", "#8df545", "#8df545"];
 
@@ -356,13 +366,15 @@
     
     if(modal_data.action=="book")
     {
-      var jqxhr = $.post("/api/action/book", {
-        id_calendar_event: modal_data.id_event,
-      })
-      .done(function(data) {
-
-        if("error" in data)
-        {
+      window.ajax({
+        url: "/api/action/book",
+        type: "POST",
+        data: {
+          id_calendar_event: modal_data.id_event,
+        },
+        success: function(data) {
+          if("error" in data)
+          {
           console.error(data);
           
           if("error_type" in data)
@@ -382,57 +394,61 @@
           }
 
           modal.find(".modal-alert-msg").removeClass("d-none");
-        }else
-        {
-          modal.find(".modal-validation-msg ").html("Votre réservation est prise en compte mais n'est pas encore validé.<br/>Vous devez attendre la confirmation qui vous sera envoyée après une validation manuelle.<br/><br/>Vous pourrez annuler cette visite en cliquant sur cette dernière dans la section 'Mes visites' pour faire apparaître la colonne 'Actions'.");
-          modal.find(".modal-validation-msg ").removeClass("d-none");
+          }else
+          {
+            modal.find(".modal-validation-msg ").html("Votre réservation est prise en compte mais n'est pas encore validé.<br/>Vous devez attendre la confirmation qui vous sera envoyée après une validation manuelle.<br/><br/>Vous pourrez annuler cette visite en cliquant sur cette dernière dans la section 'Mes visites' pour faire apparaître la colonne 'Actions'.");
+            modal.find(".modal-validation-msg ").removeClass("d-none");
+          }
+
+        },
+        error: function(err) {
+          console.error(err);
+
+          modal.find(".modal-alert-msg").html("Une erreur sur le serveur est survenue");
+          modal.find(".modal-alert-msg").removeClass("d-none");
         }
-
-      })
-      .fail(function(err) {
-        console.error(err);
-
-        modal.find(".modal-alert-msg").html("Une erreur sur le serveur est survenue");
-        modal.find(".modal-alert-msg").removeClass("d-none");
-
       });
+    
     }else if(modal_data.action=="unbook")
     {
-      var jqxhr = $.post("/api/action/unbook", {
-        id_calendar_event: modal_data.id_event,
-        reason: reason,
-      })
-      .done(function(data) {
 
-        if("error" in data)
-        {
+      window.ajax({
+        url: "/api/action/unbook",
+        type: "POST",
+        data: {
+          id_calendar_event: modal_data.id_event,
+        reason: reason,
+        },
+        success: function(data) {
+          if("error" in data)
+          {
           console.error(data);
 
           modal.find(".modal-alert-msg").html("Vous ne pouvez pas annuler cette visite");
           modal.find(".modal-alert-msg").removeClass("d-none");
 
-        }else
-        {
-
-          if(!data.async_process)
-          {
-            modal.find(".modal-validation-msg ").html("Votre annulation est effective. Aucune confirmation n'est necessaire.");
-            modal.find(".modal-validation-msg ").removeClass("d-none");
           }else
           {
-            modal.find(".modal-validation-msg ").html("Votre annulation a bien été prise en compte mais elle n'est pas encore validée.<br/>Vous devez attendre la confirmation qui vous sera envoyée après une validation manuelle");
-            modal.find(".modal-validation-msg ").removeClass("d-none");
+
+            if(!data.async_process)
+            {
+              modal.find(".modal-validation-msg ").html("Votre annulation est effective. Aucune confirmation n'est necessaire.");
+              modal.find(".modal-validation-msg ").removeClass("d-none");
+            }else
+            {
+              modal.find(".modal-validation-msg ").html("Votre annulation a bien été prise en compte mais elle n'est pas encore validée.<br/>Vous devez attendre la confirmation qui vous sera envoyée après une validation manuelle");
+              modal.find(".modal-validation-msg ").removeClass("d-none");
+            }
           }
+        },
+        error: function(err) {
+          console.error(err);
+
+          modal.find(".modal-alert-msg").html("Une erreur sur le serveur est survenue");
+          modal.find(".modal-alert-msg").removeClass("d-none");
         }
-
-      })
-      .fail(function(err) {
-        console.error(err);
-
-        modal.find(".modal-alert-msg").html("Une erreur sur le serveur est survenue");
-        modal.find(".modal-alert-msg").removeClass("d-none");
-
       });
+
     }else
     {
       close = true;
@@ -450,6 +466,26 @@
       modal.modal('hide');
 
   });
+
+  function dateToUtcFormat(date)
+  {
+    const year = date.getFullYear();
+    const str_year = "" + year;
+
+    const month = date.getMonth() + 1;
+    const str_month = (month<10)?("0"+month):(""+month);
+
+    const day = date.getDate();
+    const str_day = (day<10)?("0"+day):(""+day);
+
+    const hours = date.getHours();
+    const str_hours = (hours<10)?("0"+hours):(""+hours);
+
+    const minutes = date.getMinutes();
+    const str_minutes = (minutes<10)?("0"+minutes):(""+minutes);
+
+    return str_year + "/" + str_month + "/" + str_day  + " " + str_hours + ":" + str_minutes;
+  }
 
   function initCalendar(can_see)
   {
@@ -487,23 +523,31 @@
       },
       timeZone: 'UTC',
       locale: window.selectedLanguage,
-      eventSources: [
-        {
-          url: '/api/calendar/events', // use the `url` property
-          method: 'GET',
-          extraParams: {
+      events: function(info, successCallback, failureCallback) {
+
+        window.ajax({
+          url: '/api/calendar/events',
+          method: "GET",
+          data: {
+            start: dateToUtcFormat(info.start),
+            end: dateToUtcFormat(info.end),
+
             language: window.selectedLanguage,
           },
-          failure: function() {
-            alert('Une erreur est survenue');
+          success: function(data) {
+            successCallback(data);    
           },
-        }
-      ],
+          error: function(err) {
+            alert('Une erreur est survenue');
+          }
+        })
+         
+      },
       eventClick: function(info) {
 
         const props = info.event._def.extendedProps;
-        const start_date = new Date(Date.parse(props.start_date));
-        const end_date = new Date(Date.parse(props.end_date));
+        const start_date = moment(props.start_date).toDate();
+        const end_date = moment(props.end_date).toDate();
 
         const modal = $('#modal');
 
@@ -551,7 +595,7 @@
   {
     if(parse)
     {
-      date = new Date(Date.parse(date));
+      date = moment(date).toDate();
     }
 
     var d = date.getDate();
@@ -1089,15 +1133,17 @@
     const all_users = args.all_users?args.all_users:false;
     const request_response_only = args.requestResponseOnly?args.requestResponseOnly:false;
     
-    $.getJSON("/api/calendar/getUserEvents", {
+    window.ajax({
+      url: "/api/calendar/getUserEvents",
+      type: "GET",
+      data: {
           id_user: id_user,
           start_date: start_date,
           end_date: end_date,
           all_users: all_users,
           language: window.selectedLanguage
-      })
-      .done(function(data) {
-
+      },
+      success: function(data) {
         try
         {
           if(done_request_function)
@@ -1128,16 +1174,16 @@
 
           throw err; 
         }
+      },
+      error: function(err) {
+        console.error(err);
 
-      })
-      .fail(function(err) {
-          console.error(err);
+        if(end_function)
+          end_function(false);
 
-          if(end_function)
-            end_function(false);
-
-          alert("Une erreur est survenue");
-      });
+        alert("Une erreur est survenue");
+      }
+    });
   }
 
   function getWeekDateInterval(start=null)
@@ -1155,102 +1201,49 @@
     return [firstday, lastday];
   }
 
-  function initBeforeReady()
+  function reload()
   {
-    let token = null;
-    try 
+    let url = "{{ Route::getCurrentRoute()->uri }}";
+    if(typeof store == 'undefined')
     {
-      window.user = JSON.parse($.cookie('user'));
-      token = window.user.token;
-
-    }catch (err) 
-    {
-      console.error(err);
-      goToPage("login");
+      url += "?" + "access_token=" + window.user.token;
     }
 
-      //
-      // firefox, ie8+ 
-      //
-      var accessor = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'status');
-      if(accessor)
-      {
-        var o = XMLHttpRequest.prototype.open;
-          XMLHttpRequest.prototype.open = function(){
-            var res = o.apply(this, arguments);
-            var err = new Error();
-            this.setRequestHeader('Authorization', 'Bearer ' + token);
-            return res;
-          };
+    document.location.href = url;
+  }
 
-        Object.defineProperty(XMLHttpRequest.prototype, 'status', {
-          get: function() {
-            const status = accessor.get.call(this);
-            if(status==498)//token error
-            {
-              goToPage("login")
-            }
+  function createAjaxRequest(parms, token)
+  {
+      const url = parms.url;
+      const type = parms.type;
+      const data = parms.data?parms.data:{};
+      const succes_function = parms.success;
+      const error_function = parms.error;
 
-            return accessor.get.call(this);
-          },
-          configurable: true
-        });
-      }else
-      {
-            //
-          // chrome, safari (accessor == null)
-          //
-          var rawOpen = XMLHttpRequest.prototype.open;
-
-          XMLHttpRequest.prototype.open = function() {
-            if (!this._hooked) {
-              this._hooked = true;
-              setupHook(this);
-            }
-            rawOpen.apply(this, arguments);
-
-            this.setRequestHeader('Authorization', 'Bearer ' + token);
-          }
-
-          function setupHook(xhr) {
-            function getter() {
-              
-              delete xhr.status;
-              var ret = xhr.status;
-              setup();
-              
-              const status = ret;
-              if(status==498)//token error
-              {
-                goToPage("login")
-              }
-              
-              return ret;
-            }
-
-            function setup() {
-              Object.defineProperty(xhr, 'status', {
-                get: getter,
-                configurable: true
-              });
-            }
-            setup();
-          }
-      }
-
-      $("#btn_disconnect").click(function() {
-        $.removeCookie("user");
-        goToPage("login");
-      });
-
-      $("#modal").on("hide.bs.modal", function () {
-          const data = $(this).data('meta_data');
-          $(this).data('meta_data', {});
-
-          if(data && isDict(data) && ("reload_page_on_close" in data) && data.reload_page_on_close==true)
+      $.ajax({
+        type: type,
+        headers: {
+          'Authorization': 'Bearer ' + token,
+        },
+        url: url,
+        cache: false,
+        data: data,
+        success: function(data) 
+        {
+          if(succes_function)
+            succes_function(data);
+        },
+        error: function(jqXHR, textStatus, err) 
+        {
+          if(jqXHR.status==498)
           {
-            document.location.reload();
+            goToPage("login");
+            return ;
           }
+
+          if(error_function)
+            error_function(jqXHR);
+        }
       });
   }
 
@@ -1317,14 +1310,17 @@
   {
     const container = $("#search_container");
     startLoading();
-      const query = $("#input_search").val();
+    const query = $("#input_search").val();
 
-      $("#search").find(".spinner").removeClass("d-none");
+    $("#search").find(".spinner").removeClass("d-none");
 
-      $.post("/api/search", {
-          search_query: query,
-      })
-      .done(function(data) {
+    window.ajax({
+      url: "/api/search",
+      type: "POST",
+      data: {
+        search_query: query,
+      },
+      success: function(data) {
         endLoading();
 
         if("error" in data)
@@ -1346,15 +1342,16 @@
           });
         }
 
-      })
-      .fail(function(err) {
-          console.error(err);
-          alert("Une erreur est survenue");
+      },
+      error: function(err) {
+        console.error(err);
+        alert("Une erreur est survenue");
 
-          endLoading();
-      });
+        endLoading();
+      }
+    });
 
-      $("#search").find(".spinner").addClass("d-none");
+    $("#search").find(".spinner").addClass("d-none");
   }
 
   function initSearch(can_see)
@@ -1366,11 +1363,14 @@
       return ;
     }
     $('#input_search').on('keypress', function(e) {
-        e.preventDefault();
-
-        search();
+        if (event.which == 13) 
+        {
+          e.preventDefault();
+          search();
+          return false;
+        }
         
-        return false;
+        return true;
     });
 
 
@@ -1415,18 +1415,8 @@
 
   function init()
   {
-    const user = window.user.data;
-    const can_see = (user.right_level_name=="admin" || user.right_level_name=="manager");
-    window.user.is_manager_group = can_see;
+    startLoading();
 
-    initPersonnalLog(!can_see);
-    initSummary(can_see);
-    initSearch(can_see);
-  }
-
-  function documentReady()
-  {
-    
     var sections_to_hide = [];
     if(window.user.data.right_level_name=="admin")
     {
@@ -1447,10 +1437,12 @@
       $("#"+section_name).addClass('d-none');
     }
 
-    $.getJSON("/api/info/", {
-      })
-      .done(function(data) {
-
+    window.ajax({
+      url: "/api/info",
+      type: "GET",
+      data: {
+      },
+      success: function(data) {
         const info = data.data;
 
         window.info = info;
@@ -1470,16 +1462,95 @@
           window.selectedLanguage = $(this).val();
         });
 
-        init();
+        const user = window.user.data;
+        const can_see = (user.right_level_name=="admin" || user.right_level_name=="manager");
+        window.user.is_manager_group = can_see;
 
-      }).fail((err) => {
+        initPersonnalLog(!can_see);
+        initSummary(can_see);
+        initSearch(can_see);
+      },
+      error: function(err) {
         alert("Une erreur est survenue");
-      });
+      }
+    });
+
+  }
+
+  function documentReady()
+  {
+    let token = null;
+    try 
+    {
+        if(typeof store !== 'undefined')
+        {
+          const user = store.get('user');
+          window.user = user;
+          token = user.token;
+        }else
+        {
+          token = "{{$access_token}}";
+          window.user = null;
+          window.history.pushState('Acceuil', 'Visite', '/');
+        }
+
+    }catch (err) 
+    {
+      goToPage("login");
     }
 
-  initBeforeReady();
-  startLoading();
-  documentReady();
+    if(token==null || (typeof token !=="string") || token.length==0)
+    {
+      goToPage("login");
+    }
+
+    window.ajax = (parms) => createAjaxRequest(parms, token);
+
+    $("#btn_disconnect").click(function() {
+      goToPage("login");
+    });
+
+    $("#modal").on("hide.bs.modal", function () {
+        const data = $(this).data('meta_data');
+        $(this).data('meta_data', {});
+
+        if(data && isDict(data) && ("reload_page_on_close" in data) && data.reload_page_on_close==true)
+        {
+          //document.location.reload();
+          reload();
+        }
+    });
+
+    if(window.user==null)
+    {
+      window.ajax({
+        url: "/api/profile",
+        type: "GET",
+        success: function(data) {
+          window.user = {
+            token: token, 
+            data: data
+          };
+
+          init();
+        },
+        error: function(err) {
+          goToPage('login');
+        }
+      });
+    }else
+    {
+      init();
+    }
+  }
+
+  $(document).ready(function(){
+ // start load my js functions
+ documentReady();
+});
+
+  
+
 
 </script>
 
