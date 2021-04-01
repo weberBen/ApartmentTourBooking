@@ -10,5 +10,5 @@
         "default": "Bonjour,\nDes données vous concernant pour la visite de l'appartement ont été mises à jour. Pour les consulter rendez-vous sur votre espace dédié."
     },
     "registration": "Bonjour,\nAfin de faciliter la gestion et la prise des visites pour l'appartement, je mets à votre disposition une plateforme, permettant le traitement en ligne de vos demandes, à l'URL suivante : {{user.login_url}} (ou avec votre numéro de téléphone comme identifiant et comme mot de passe : {{user.unencrypted_pwd}} ).\nPour faire une visite, il est nécessaire de réserver un créneau au risque de le voir être attribué à quelqu'un d'autre ou qu'il soit annulé faute de réservation.",
-    "appendix_msg": "\n\n[Ceci est un message automatique, merci de n'y répondre qu'en cas de nécessité absolue]"
+    "appendix_msg": "\n\n[Ceci est un message automatique, merci de n'y répondre qu'en cas de nécessité. En cas de demande particulière, vous pouvez me contacter à ce même numéro]"
 }
