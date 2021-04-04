@@ -5,4 +5,4 @@ Allow people to book a visit to your apartment (because you leave it) without ha
 <Directory /var/www/>
 AllowOverride None -> AllowOverride All
 
-![Alt Text](assets/giphy.gif)
+![Alt Text](assets/add_user.gif)
