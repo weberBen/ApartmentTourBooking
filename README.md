@@ -23,7 +23,7 @@ Then the app will automatically send SMS (with your current mobile phone number)
 
 **Change booking status**
 
-<img src="assets/event_status.jpg" height="400" />
+<img src="assets/event_status.jpg" height="600" />
 
 # Installation
 
