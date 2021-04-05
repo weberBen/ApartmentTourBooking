@@ -1,7 +1,7 @@
 {
     "action": {
         "book": {
-            "validate": "Bonjour,\nConfirmation de visite (référence : {{event.reference}}) : rendez-vous le {{event.date}} de {{event.start_time}} à {{event.end_time}} (fuseau horaire {{timezone}}) au {{localization.address}} ({{localization.info}}) - {{localization.city_name}} {{localization.city_code}}.\nUne fois devant la porte merci d'appeler.\n\nEn cas d'erreur de saisie ou de retard merci de m'en informer.\n\nLa visiste débute à l'heure de début du créneau et il ne sera pas possible d'empiéter sur les visites suivantes.\nEn cas de retard ne permettant plus de poursuivre la visite, cette dernière sera annulée.",
+            "validate": "Bonjour,\nConfirmation de visite (référence : {{event.reference}}) : rendez-vous le {{event.date}} de {{event.start_time}} à {{event.end_time}} (fuseau horaire {{timezone}}) au {{localization.address}} ({{localization.info}}) - {{localization.city_name}} {{localization.city_code}}.\nUne fois devant la porte merci d'appeler.\n\nEn cas d'erreur de saisie ou de retard merci de m'en informer à ce même numéro.\n\nLa visiste débute à l'heure de début du créneau et il ne sera pas possible d'empiéter sur les visites suivantes.\nEn cas de retard ne permettant plus de poursuivre la visite, cette dernière sera annulée.",
             "cancel": "Bonjour,\nVotre réservation de visite référence {{event.reference}} du créneau {{event.start_date}} - {{event.end_date}} n'a pas pu être validé pour le motif suivant : <<{{action.reason}}>>.\nMerci de choisir un autre créneau si possible.\n"
         },
         "unbook": {
